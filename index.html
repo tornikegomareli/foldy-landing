@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foldy · Frosted-glass fold effects for iOS</title>
+<meta name="description" content="Foldy folds any iOS screen like frosted glass. SwiftUI and UIKit, Metal, iOS 17+, no dependencies. Inspired by iPhone Duo.">
+<meta property="og:title" content="Foldy · Fold anything.">
+<meta property="og:description" content="Frosted-glass fold effects for iOS, rendered with Metal. SwiftUI and UIKit, iOS 17+, no dependencies.">
+<meta property="og:image" content="https://tornikegomareli.github.io/foldy-landing/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23E8542A'/%3E%3Cpath d='M8 21l8-4 8 4-8 4z' fill='%23fff' opacity='.55'/%3E%3Cpath d='M8 16l8-4 8 4-8 4z' fill='%23fff' opacity='.8'/%3E%3Cpath d='M8 11l8-4 8 4-8 4z' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #09090b;
+    --panel: #121216;
+    --fg: #f5f5f7;
+    --dim: rgba(245,245,247,.62);
+    --faint: rgba(245,245,247,.34);
+    --line: rgba(255,255,255,.09);
+    --accent: #e8542a;
+    --code: #0e0e12;
+    --serif: "New York", "Iowan Old Style", Georgia, "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Inter, Arial, sans-serif;
+    --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; min-width: 0; }
+  html { scroll-behavior: smooth; }
+  body { overflow-x: hidden; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans);
+    -webkit-font-smoothing: antialiased; line-height: 1.55; font-size: 16px;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; width: 100%; }
+
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 22px; letter-spacing: -.01em; text-decoration: none; }
+  .brand svg { width: 26px; height: 26px; transform: rotate(-12deg); }
+  .links { display: flex; gap: 22px; font-size: 14px; color: var(--dim); }
+  .links a { text-decoration: none; }
+  .links a:hover { color: var(--fg); }
+
+  .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding: 56px 0 40px; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .18em; color: var(--accent); text-transform: uppercase; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(52px, 7vw, 86px); line-height: .98; letter-spacing: -.035em; margin: 14px 0 22px; }
+  .lede { font-size: 19px; color: var(--dim); max-width: 520px; margin: 0 0 30px; }
+  .lede b { color: var(--fg); font-weight: 500; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 15px; border: 1px solid var(--line); }
+  .btn.primary { background: var(--fg); color: #000; border-color: var(--fg); }
+  .btn:hover { border-color: rgba(255,255,255,.3); }
+  .meta { margin-top: 26px; display: flex; gap: 18px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--faint); letter-spacing: .06em; }
+
+  /* Phone frame */
+  .phone { position: relative; width: 100%; max-width: 300px; aspect-ratio: 1260 / 2736; margin: 0 auto;
+           border-radius: 13.5% / 6.2%; background: #000; padding: 2.6%;
+           box-shadow: 0 0 0 1.5px rgba(255,255,255,.14), 0 30px 60px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.05); }
+  .phone .screen { position: absolute; inset: 2.6%; border-radius: 12% / 5.5%; overflow: hidden; background: #111; }
+  .phone video, .phone img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .phone .island { position: absolute; top: 3.2%; left: 50%; width: 31%; height: 4.2%; transform: translateX(-50%); background: #000; border-radius: 999px; z-index: 2; }
+  .hero .phone { max-width: 340px; }
+  .hero .phone.tilt { transform: rotate(-4deg); }
+
+  section { padding: 52px 0; border-top: 1px solid var(--line); }
+  h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 4vw, 44px); letter-spacing: -.03em; margin: 0 0 10px; }
+  .sub { color: var(--dim); max-width: 640px; margin: 0 0 34px; font-size: 17px; }
+
+  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px 28px; }
+  .demo { text-align: center; }
+  .demo h3 { font-size: 17px; font-weight: 600; margin: 18px 0 4px; letter-spacing: -.01em; }
+  .demo p { margin: 0; font-size: 14px; color: var(--dim); }
+  .demo code { font-family: var(--mono); font-size: 12px; color: var(--faint); }
+
+  .story { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .story p { color: var(--dim); font-size: 17px; }
+  .story p b { color: var(--fg); font-weight: 500; }
+  blockquote { margin: 18px 0; padding: 16px 20px; border-left: 2px solid var(--accent); color: var(--fg); font-family: var(--serif); font-size: 19px; line-height: 1.4; }
+  blockquote cite { display: block; margin-top: 8px; font-family: var(--mono); font-style: normal; font-size: 12px; color: var(--faint); }
+
+  .box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 16px; }
+  .card p { margin: 0; color: var(--dim); font-size: 14px; }
+  .card code { font-family: var(--mono); font-size: 13px; color: var(--fg); }
+
+  pre { background: var(--code); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; overflow-x: auto; font-family: var(--mono); font-size: 13.5px; line-height: 1.6; margin: 0; max-width: 100%; }
+  .two > div { min-width: 0; }
+  .lede, .sub, .story p, .demo p, .card p { overflow-wrap: anywhere; }
+  .kw { color: #ff7ab2; } .ty { color: #9ad1ff; } .fn { color: #d9c7ff; } .cm { color: var(--faint); } .st { color: #ffd479; } .nu { color: #ffb86c; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .two > div > .label { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; color: var(--faint); text-transform: uppercase; margin: 0 0 10px; }
+
+  .glass { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .glass div { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 12px; }
+  .glass b { display: block; font-size: 14px; margin-bottom: 4px; }
+  .glass span { font-size: 12.5px; color: var(--dim); }
+
+  footer { border-top: 1px solid var(--line); padding: 34px 0 60px; color: var(--faint); font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  footer a { color: var(--dim); text-decoration: none; }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; padding-top: 28px; }
+    .hero .phone { max-width: 260px; }
+    .hero .phone.tilt { transform: none; }
+    .gallery { grid-template-columns: repeat(2, 1fr); gap: 26px 18px; }
+    .story, .two, .box { grid-template-columns: 1fr; }
+    .glass { grid-template-columns: repeat(2, 1fr); }
+    .links { display: none; }
+  }
+  @media (max-width: 480px) { .gallery { grid-template-columns: 1fr; } .lede { font-size: 17px; } h1 { font-size: 52px; } .meta { gap: 12px; } }
+  @media (prefers-reduced-motion: reduce) { .hero .phone.tilt { transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#E8542A"/><path d="M8 21l8-4 8 4-8 4z" fill="#fff" opacity=".55"/><path d="M8 16l8-4 8 4-8 4z" fill="#fff" opacity=".8"/><path d="M8 11l8-4 8 4-8 4z" fill="#fff"/></svg>
+      foldy
+    </a>
+    <div class="links">
+      <a href="#demos">Demos</a>
+      <a href="#story">Why</a>
+      <a href="#box">What's in the box</a>
+      <a href="#start">Quick start</a>
+      <a href="https://github.com/tornikegomareli/Foldy">GitHub</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <div class="eyebrow">Swift + Metal · iOS 17+</div>
+      <h1>Fold anything.</h1>
+      <p class="lede">Foldy folds any screen like a pane of <b>frosted glass</b>. The interface stays where it was; only the glass moves. Fold one screen into another, tilt a view with the gyroscope, or let the Dynamic Island swallow a card. SwiftUI and UIKit, no dependencies.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/tornikegomareli/Foldy">Get it on GitHub</a>
+        <a class="btn" href="#start">Quick start</a>
+      </div>
+      <div class="meta"><span>MIT</span><span>SwiftUI · UIKit</span><span>ONE METAL SHADER</span><span>SWIFT 6</span></div>
+    </div>
+    <div class="phone tilt">
+      <div class="island"></div>
+      <div class="screen">
+        <video autoplay muted loop playsinline poster="media/wallet.jpg" aria-label="A wallet screen folding like frosted glass into a card detail">
+          <source src="media/wallet.webm" type="video/webm">
+          <source src="media/wallet.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </header>
+
+  <section id="demos">
+    <h2>Recorded on an iPhone.</h2>
+    <p class="sub">Every clip is a real screen from the demo app, captured on device. Nothing is composited after the fact; the frost, the crease, and the island are all the shader.</p>
+    <div class="gallery">
+      <div class="demo">
+        <div class="phone"><div class="island"></div><div class="screen">
+          <video autoplay muted loop playsinline poster="media/stories.jpg"><source src="media/stories.webm" type="video/webm"><source src="media/stories.mp4" type="video/mp4"></video>
+        </div></div>
+        <h3>The island eats your cards</h3>
+        <p>Scroll up and each card folds, frosts, and melts into the Dynamic Island as black liquid. Scroll down and it is born again.</p>
+        <p><code>FoldCutoutGhost · liquid: true</code></p>
+      </div>
+      <div class="demo">
+        <div class="phone"><div class="island"></div><div class="screen">
+          <video autoplay muted loop playsinline poster="media/wallet.jpg"><source src="media/wallet.webm" type="video/webm"><source src="media/wallet.mp4" type="video/mp4"></video>
+        </div></div>
+        <h3>Page turn</h3>
+        <p>The card stack folds away around the right edge while the detail unfolds behind it. Both screens keep their state.</p>
+        <p><code>FoldTransition · .pageTurn</code></p>
+      </div>
+      <div class="demo">
+        <div class="phone"><div class="island"></div><div class="screen">
+          <video autoplay muted loop playsinline poster="media/weather.jpg"><source src="media/weather.webm" type="video/webm"><source src="media/weather.mp4" type="video/mp4"></video>
+        </div></div>
+        <h3>Midnight glass</h3>
+        <p>Same fold, different material. Six appearances change the blur, the darkening, and the finish of the pane.</p>
+        <p><code>FoldStyle(appearance: .midnight)</code></p>
+      </div>
+      <div class="demo">
+        <div class="phone"><div class="island"></div><div class="screen">
+          <video autoplay muted loop playsinline poster="media/amalfi.jpg"><source src="media/amalfi.webm" type="video/webm"><source src="media/amalfi.mp4" type="video/mp4"></video>
+        </div></div>
+        <h3>Swipe to fold</h3>
+        <p>A swipe in any direction drives the fold and settles on the nearer side. Content underneath stays tappable.</p>
+        <p><code>.foldSwipe(progress:)</code></p>
+      </div>
+      <div class="demo">
+        <div class="phone"><div class="island"></div><div class="screen">
+          <video autoplay muted loop playsinline poster="media/steps.jpg"><source src="media/steps.webm" type="video/webm"><source src="media/steps.mp4" type="video/mp4"></video>
+        </div></div>
+        <h3>Frosted</h3>
+        <p>The reference optics: a 320 mm eye distance, blur that grows with the gap, and glass that darkens the further it lifts.</p>
+        <p><code>FoldStyle.frosted</code></p>
+      </div>
+      <div class="demo">
+        <div class="phone"><div class="island"></div><div class="screen">
+          <video autoplay muted loop playsinline poster="media/boarding.jpg"><source src="media/boarding.webm" type="video/webm"><source src="media/boarding.mp4" type="video/mp4"></video>
+        </div></div>
+        <h3>Native UIKit</h3>
+        <p>A boarding pass built in UIKit, folded by the same container. Foldy captures the real view hierarchy, not a SwiftUI layer.</p>
+        <p><code>FoldContainerView</code></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="story">
+    <div class="story">
+      <div>
+        <h2>Where the fold comes from.</h2>
+        <p>On September 9, 2026 Apple unveiled <b>iPhone Duo</b>, its first foldable iPhone, shipping October 23. The interface adapts as the device folds, and a new display engine drives both screens during the transition.</p>
+        <blockquote>“iOS seamlessly adapts to the new ways to use iPhone Duo — content reacts as it folds, reorients when turned to the side, and switches to the appropriate display when flipped over.”
+          <cite>Apple Newsroom, “Apple unveils iPhone Duo”</cite></blockquote>
+        <p>Foldy is an independent recreation of that visual idea for any iPhone: the interface lives on a fixed plane, the viewer's eye stays put, and the screen becomes a pane of frosted glass rotating around a hinge. Every pixel casts a ray from the eye through the glass to the interface, then blurs and darkens by the gap. It is not Apple's implementation and not a display-handoff API.</p>
+        <p>The projection and optics are adapted from Elijah Semyonov's <a href="https://github.com/elijah-semyonov/DuoLikeAnimation">DuoLikeAnimation</a>, MIT. Foldy adds texture capture, two-view compositing, a blur pyramid, page turns, materials, the island, and gesture and motion inputs.</p>
+      </div>
+      <div class="phone">
+        <div class="island"></div>
+        <div class="screen">
+          <video autoplay muted loop playsinline poster="media/boarding.jpg"><source src="media/boarding.webm" type="video/webm"><source src="media/boarding.mp4" type="video/mp4"></video>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="box">
+    <h2>What's in the box.</h2>
+    <p class="sub">One shader, a small state machine, and thin adapters for both UI frameworks.</p>
+    <div class="box">
+      <div class="card"><h3><code>FoldTransition</code></h3><p>Fold between two SwiftUI views. Zero is the source, one the destination. Animate it or drive it from a gesture; both views keep their state.</p></div>
+      <div class="card"><h3><code>.foldEffect(tilt:)</code></h3><p>Tilt one view on one or two axes, like the original demo. Pair it with <code>FoldMotionSource</code> to follow the phone.</p></div>
+      <div class="card"><h3><code>.foldSwipe(progress:)</code></h3><p>Any swipe folds toward the other endpoint and settles on release. A UIKit pan on the fold container, so content stays tappable.</p></div>
+      <div class="card"><h3><code>FoldPager</code></h3><p>Page or grid-navigate a list with page turns. Swipes and phone nudges built in.</p></div>
+      <div class="card"><h3><code>FoldCutout</code></h3><p>The Dynamic Island's measured frame, a pull that folds a view into it, magnetic scroll settling, and the liquid merge.</p></div>
+      <div class="card"><h3><code>FoldAppearance</code></h3><p>Frosted, clear, grain, gloss, ink, midnight. Each is a material with its own optics and a finish in the shader.</p></div>
+    </div>
+    <div class="glass" style="margin-top:18px">
+      <div><b>Frosted</b><span>Heavy blur that darkens with distance. The reference.</span></div>
+      <div><b>Clear</b><span>Pure projection. No blur, no darkening.</span></div>
+      <div><b>Grain</b><span>Sanded glass with visible speckle.</span></div>
+      <div><b>Gloss</b><span>A highlight sweeps across the pane as it tilts.</span></div>
+      <div><b>Ink</b><span>Sharp fold, shadow bleeding from the crease.</span></div>
+      <div><b>Midnight</b><span>Cool, dark, heavily diffused.</span></div>
+    </div>
+  </section>
+
+  <section id="start">
+    <h2>Quick start.</h2>
+    <p class="sub">Add the package, wrap two views, bind a number. The Metal shader ships in the package; nothing to copy into your app.</p>
+    <div class="two">
+      <div>
+        <p class="label">Package.swift</p>
+<pre><span class="kw">dependencies</span>: [
+    .<span class="fn">package</span>(url: <span class="st">"https://github.com/tornikegomareli/Foldy.git"</span>, from: <span class="st">"0.1.0"</span>)
+]</pre>
+      </div>
+      <div>
+        <p class="label">SwiftUI</p>
+<pre><span class="kw">import</span> Foldy
+
+<span class="kw">struct</span> <span class="ty">Example</span>: <span class="ty">View</span> {
+    <span class="kw">@State private var</span> progress = <span class="nu">0.0</span>
+
+    <span class="kw">var</span> body: <span class="kw">some</span> <span class="ty">View</span> {
+        <span class="ty">FoldTransition</span>(progress: progress) {
+            <span class="ty">FirstScreen</span>()
+        } destination: {
+            <span class="ty">SecondScreen</span>()
+        }
+        .<span class="fn">foldSwipe</span>(progress: <span class="kw">$</span>progress)
+    }
+}
+
+<span class="cm">// Tilt one view like frosted glass</span>
+<span class="ty">Card</span>().<span class="fn">foldEffect</span>(angle: .<span class="fn">degrees</span>(<span class="nu">30</span>))</pre>
+      </div>
+    </div>
+    <div class="two" style="margin-top:18px">
+      <div>
+        <p class="label">UIKit</p>
+<pre><span class="kw">let</span> fold = <span class="ty">FoldContainerView</span>(source: first, destination: second)
+view.<span class="fn">addSubview</span>(fold)
+fold.frame = view.bounds
+fold.<span class="fn">animate</span>(to: .destination)
+<span class="cm">// or drive a gesture</span>
+fold.<span class="fn">setProgress</span>(<span class="nu">0.4</span>)</pre>
+      </div>
+      <div>
+        <p class="label">Device motion</p>
+<pre><span class="kw">@State private var</span> motion = <span class="ty">FoldMotionSource</span>()
+
+content.<span class="fn">foldEffect</span>(tilt: motion.tilt)
+    .<span class="fn">onAppear</span> { motion.<span class="fn">start</span>() }
+    .<span class="fn">onDisappear</span> { motion.<span class="fn">stop</span>() }
+
+<span class="cm">// 120 Hz gyro, 40 ms prediction, calibrated neutral</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>MIT · Foldy by <a href="https://github.com/tornikegomareli">Tornike Gomareli</a></span>
+    <span><a href="https://github.com/tornikegomareli/Foldy/blob/main/Docs/Shader.md">How the shader works</a> · <a href="https://github.com/tornikegomareli/Foldy/blob/main/ThirdPartyNotices.md">Notices</a> · Not affiliated with Apple.</span>
+  </footer>
+</div>
+</body>
+</html>
