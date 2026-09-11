@@ -52,20 +52,10 @@
   .btn:hover { border-color: rgba(255,255,255,.3); }
   .meta { margin-top: 26px; display: flex; gap: 18px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--faint); letter-spacing: .06em; }
 
-  /* iPhone Air. Body 156.2 x 74.7 mm around a 420 x 912 pt screen whose corners are 55 pt.
-     The recording is a plain rectangle, so the screen box supplies the corners and the island. */
-  .phone { position: relative; width: 100%; aspect-ratio: 747 / 1562;
-           border-radius: 20% / 9.6%;
-           background: linear-gradient(160deg, #3a3a3f, #17171a 45%, #0d0d10);
-           box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), inset 0 0 0 3px #0a0a0c, 0 2vh 5vh rgba(0,0,0,.65); }
-  .phone .screen { position: absolute; left: 4.1%; right: 4.1%; top: 4.6%; bottom: 4.6%;
-                   border-radius: 13.1% / 6.03%; overflow: hidden; background: #000; }
-  .phone video, .phone img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .phone .island { position: absolute; top: 2.19%; left: 50%; width: 29.8%; height: 4.02%; transform: translateX(-50%);
-                   background: #000; border-radius: 999px; z-index: 2; }
-  .phone::before, .phone::after { content: ""; position: absolute; width: 1.2%; border-radius: 2px; background: #1e1e22; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
-  .phone::before { left: -1.2%; top: 20%; height: 9%; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 13% 0 0 #1e1e22; }
-  .phone::after { right: -1.2%; top: 24%; height: 13%; }
+  /* The phone body is baked into each clip by ffmpeg (682 x 1426 with the screen at 26,29), so the
+     page draws nothing around the video. */
+  .phone { position: relative; width: 100%; aspect-ratio: 682 / 1426; filter: drop-shadow(0 24px 40px rgba(0,0,0,.6)); }
+  .phone video, .phone img { width: 100%; height: 100%; display: block; }
 
   .hero .phone { max-width: 340px; }
   .hero .phone.tilt { transform: rotate(-4deg); }
@@ -148,65 +138,59 @@
       <div class="meta"><span>MIT</span><span>SwiftUI · UIKit</span><span>ONE METAL SHADER</span><span>SWIFT 6</span></div>
     </div>
     <div class="phone tilt">
-      <div class="screen">
-        <div class="island"></div>
-        <video autoplay muted loop playsinline poster="media/wallet.jpg" aria-label="A wallet screen folding like frosted glass into a card detail">
-          <source src="media/wallet.webm" type="video/webm">
-          <source src="media/wallet.mp4" type="video/mp4">
-        </video>
-      </div>
-    </div>
-  </header>
+  <video autoplay muted loop playsinline preload="auto" poster="media/wallet.jpg" aria-label="A wallet screen folding like frosted glass into a card detail"><source src="media/wallet.webm" type="video/webm"><source src="media/wallet.mp4" type="video/mp4"></video>
+</div>
+</header>
 
   <section id="demos">
     <h2>Recorded on an iPhone.</h2>
     <p class="sub">Every clip is a real screen from the demo app, captured on device. Nothing is composited after the fact; the frost, the crease, and the island are all the shader.</p>
     <div class="gallery">
       <div class="demo">
-        <div class="phone"><div class="screen"><div class="island"></div>
-          <video autoplay muted loop playsinline poster="media/stories.jpg"><source src="media/stories.webm" type="video/webm"><source src="media/stories.mp4" type="video/mp4"></video>
-        </div></div>
-        <h3>The island eats your cards</h3>
+        <div class="phone">
+  <video autoplay muted loop playsinline preload="auto" poster="media/stories.jpg"><source src="media/stories.webm" type="video/webm"><source src="media/stories.mp4" type="video/mp4"></video>
+</div>
+<h3>The island eats your cards</h3>
         <p>Scroll up and each card folds, frosts, and melts into the Dynamic Island as black liquid. Scroll down and it is born again.</p>
         <p><code>FoldCutoutGhost · liquid: true</code></p>
       </div>
       <div class="demo">
-        <div class="phone"><div class="screen"><div class="island"></div>
-          <video autoplay muted loop playsinline poster="media/wallet.jpg"><source src="media/wallet.webm" type="video/webm"><source src="media/wallet.mp4" type="video/mp4"></video>
-        </div></div>
-        <h3>Page turn</h3>
+        <div class="phone">
+  <video autoplay muted loop playsinline preload="auto" poster="media/wallet.jpg"><source src="media/wallet.webm" type="video/webm"><source src="media/wallet.mp4" type="video/mp4"></video>
+</div>
+<h3>Page turn</h3>
         <p>The card stack folds away around the right edge while the detail unfolds behind it. Both screens keep their state.</p>
         <p><code>FoldTransition · .pageTurn</code></p>
       </div>
       <div class="demo">
-        <div class="phone"><div class="screen"><div class="island"></div>
-          <video autoplay muted loop playsinline poster="media/weather.jpg"><source src="media/weather.webm" type="video/webm"><source src="media/weather.mp4" type="video/mp4"></video>
-        </div></div>
-        <h3>Midnight glass</h3>
+        <div class="phone">
+  <video autoplay muted loop playsinline preload="auto" poster="media/weather.jpg"><source src="media/weather.webm" type="video/webm"><source src="media/weather.mp4" type="video/mp4"></video>
+</div>
+<h3>Midnight glass</h3>
         <p>Same fold, different material. Six appearances change the blur, the darkening, and the finish of the pane.</p>
         <p><code>FoldStyle(appearance: .midnight)</code></p>
       </div>
       <div class="demo">
-        <div class="phone"><div class="screen"><div class="island"></div>
-          <video autoplay muted loop playsinline poster="media/amalfi.jpg"><source src="media/amalfi.webm" type="video/webm"><source src="media/amalfi.mp4" type="video/mp4"></video>
-        </div></div>
-        <h3>Swipe to fold</h3>
+        <div class="phone">
+  <video autoplay muted loop playsinline preload="auto" poster="media/amalfi.jpg"><source src="media/amalfi.webm" type="video/webm"><source src="media/amalfi.mp4" type="video/mp4"></video>
+</div>
+<h3>Swipe to fold</h3>
         <p>A swipe in any direction drives the fold and settles on the nearer side. Content underneath stays tappable.</p>
         <p><code>.foldSwipe(progress:)</code></p>
       </div>
       <div class="demo">
-        <div class="phone"><div class="screen"><div class="island"></div>
-          <video autoplay muted loop playsinline poster="media/steps.jpg"><source src="media/steps.webm" type="video/webm"><source src="media/steps.mp4" type="video/mp4"></video>
-        </div></div>
-        <h3>Frosted</h3>
+        <div class="phone">
+  <video autoplay muted loop playsinline preload="auto" poster="media/steps.jpg"><source src="media/steps.webm" type="video/webm"><source src="media/steps.mp4" type="video/mp4"></video>
+</div>
+<h3>Frosted</h3>
         <p>The reference optics: a 320 mm eye distance, blur that grows with the gap, and glass that darkens the further it lifts.</p>
         <p><code>FoldStyle.frosted</code></p>
       </div>
       <div class="demo">
-        <div class="phone"><div class="screen"><div class="island"></div>
-          <video autoplay muted loop playsinline poster="media/boarding.jpg"><source src="media/boarding.webm" type="video/webm"><source src="media/boarding.mp4" type="video/mp4"></video>
-        </div></div>
-        <h3>Native UIKit</h3>
+        <div class="phone">
+  <video autoplay muted loop playsinline preload="auto" poster="media/boarding.jpg"><source src="media/boarding.webm" type="video/webm"><source src="media/boarding.mp4" type="video/mp4"></video>
+</div>
+<h3>Native UIKit</h3>
         <p>A boarding pass built in UIKit, folded by the same container. Foldy captures the real view hierarchy, not a SwiftUI layer.</p>
         <p><code>FoldContainerView</code></p>
       </div>
@@ -224,10 +208,7 @@
         <p>The projection and optics are adapted from Elijah Semyonov's <a href="https://github.com/elijah-semyonov/DuoLikeAnimation">DuoLikeAnimation</a>, MIT. Foldy adds texture capture, two-view compositing, a blur pyramid, page turns, materials, the island, and gesture and motion inputs.</p>
       </div>
       <div class="phone">
-        <div class="screen">
-          <div class="island"></div>
-          <video autoplay muted loop playsinline poster="media/boarding.jpg"><source src="media/boarding.webm" type="video/webm"><source src="media/boarding.mp4" type="video/mp4"></video>
-        </div>
+        <video autoplay muted loop playsinline preload="auto" poster="media/boarding.jpg"><source src="media/boarding.webm" type="video/webm"><source src="media/boarding.mp4" type="video/mp4"></video>
       </div>
     </div>
   </section>

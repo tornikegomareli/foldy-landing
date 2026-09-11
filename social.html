@@ -26,20 +26,10 @@
   .cap b { display: block; font-size: clamp(11px, 1.4vh, 18px); font-weight: 600; letter-spacing: -.01em; }
   .cap span { font-size: clamp(9px, 1.05vh, 14px); color: var(--dim); font-family: "SF Mono", ui-monospace, Menlo, monospace; }
 
-  /* iPhone Air. Body 156.2 x 74.7 mm around a 420 x 912 pt screen whose corners are 55 pt.
-     The recording is a plain rectangle, so the screen box supplies the corners and the island. */
-  .phone { position: relative; width: 100%; aspect-ratio: 747 / 1562;
-           border-radius: 20% / 9.6%;
-           background: linear-gradient(160deg, #3a3a3f, #17171a 45%, #0d0d10);
-           box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), inset 0 0 0 3px #0a0a0c, 0 2vh 5vh rgba(0,0,0,.65); }
-  .phone .screen { position: absolute; left: 4.1%; right: 4.1%; top: 4.6%; bottom: 4.6%;
-                   border-radius: 13.1% / 6.03%; overflow: hidden; background: #000; }
-  .phone video, .phone img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .phone .island { position: absolute; top: 2.19%; left: 50%; width: 29.8%; height: 4.02%; transform: translateX(-50%);
-                   background: #000; border-radius: 999px; z-index: 2; }
-  .phone::before, .phone::after { content: ""; position: absolute; width: 1.2%; border-radius: 2px; background: #1e1e22; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
-  .phone::before { left: -1.2%; top: 20%; height: 9%; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 13% 0 0 #1e1e22; }
-  .phone::after { right: -1.2%; top: 24%; height: 13%; }
+  /* The phone body is baked into each clip by ffmpeg (682 x 1426 with the screen at 26,29), so the
+     page draws nothing around the video. */
+  .phone { position: relative; width: 100%; aspect-ratio: 682 / 1426; filter: drop-shadow(0 24px 40px rgba(0,0,0,.6)); }
+  .phone video, .phone img { width: 100%; height: 100%; display: block; }
 
   .brand { position: absolute; left: 2.2vw; bottom: 2vh; display: flex; align-items: center; gap: .6vw; font-weight: 600; font-size: clamp(12px, 1.6vh, 20px); color: var(--dim); }
   .brand svg { width: 1.8vh; height: 1.8vh; transform: rotate(-12deg); }
@@ -50,24 +40,12 @@
 <body>
 <div class="board">
   <div class="grid" id="grid">
-    <div class="cell"><div class="phone"><div class="screen"><div class="island"></div>
-      <video muted loop playsinline preload="auto"><source src="media/stories.webm" type="video/webm"><source src="media/stories.mp4" type="video/mp4"></video>
-    </div></div><div class="cap"><b>Into the island</b><span>FoldCutoutGhost · liquid</span></div></div>
-    <div class="cell"><div class="phone"><div class="screen"><div class="island"></div>
-      <video muted loop playsinline preload="auto"><source src="media/wallet.webm" type="video/webm"><source src="media/wallet.mp4" type="video/mp4"></video>
-    </div></div><div class="cap"><b>Page turn</b><span>FoldTransition · .pageTurn</span></div></div>
-    <div class="cell"><div class="phone"><div class="screen"><div class="island"></div>
-      <video muted loop playsinline preload="auto"><source src="media/weather.webm" type="video/webm"><source src="media/weather.mp4" type="video/mp4"></video>
-    </div></div><div class="cap"><b>Midnight glass</b><span>FoldAppearance.midnight</span></div></div>
-    <div class="cell"><div class="phone"><div class="screen"><div class="island"></div>
-      <video muted loop playsinline preload="auto"><source src="media/amalfi.webm" type="video/webm"><source src="media/amalfi.mp4" type="video/mp4"></video>
-    </div></div><div class="cap"><b>Swipe to fold</b><span>.foldSwipe(progress:)</span></div></div>
-    <div class="cell"><div class="phone"><div class="screen"><div class="island"></div>
-      <video muted loop playsinline preload="auto"><source src="media/steps.webm" type="video/webm"><source src="media/steps.mp4" type="video/mp4"></video>
-    </div></div><div class="cap"><b>Frosted</b><span>FoldStyle.frosted</span></div></div>
-    <div class="cell"><div class="phone"><div class="screen"><div class="island"></div>
-      <video muted loop playsinline preload="auto"><source src="media/boarding.webm" type="video/webm"><source src="media/boarding.mp4" type="video/mp4"></video>
-    </div></div><div class="cap"><b>Native UIKit</b><span>FoldContainerView</span></div></div>
+    <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/stories.webm" type="video/webm"><source src="media/stories.mp4" type="video/mp4"></video></div><div class="cap"><b>Into the island</b><span>FoldCutoutGhost · liquid</span></div></div>
+    <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/wallet.webm" type="video/webm"><source src="media/wallet.mp4" type="video/mp4"></video></div><div class="cap"><b>Page turn</b><span>FoldTransition · .pageTurn</span></div></div>
+    <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/weather.webm" type="video/webm"><source src="media/weather.mp4" type="video/mp4"></video></div><div class="cap"><b>Midnight glass</b><span>FoldAppearance.midnight</span></div></div>
+    <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/amalfi.webm" type="video/webm"><source src="media/amalfi.mp4" type="video/mp4"></video></div><div class="cap"><b>Swipe to fold</b><span>.foldSwipe(progress:)</span></div></div>
+    <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/steps.webm" type="video/webm"><source src="media/steps.mp4" type="video/mp4"></video></div><div class="cap"><b>Frosted</b><span>FoldStyle.frosted</span></div></div>
+    <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/boarding.webm" type="video/webm"><source src="media/boarding.mp4" type="video/mp4"></video></div><div class="cap"><b>Native UIKit</b><span>FoldContainerView</span></div></div>
   </div>
   <div class="brand">
     <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#E8542A"/><path d="M8 21l8-4 8 4-8 4z" fill="#fff" opacity=".55"/><path d="M8 16l8-4 8 4-8 4z" fill="#fff" opacity=".8"/><path d="M8 11l8-4 8 4-8 4z" fill="#fff"/></svg>
