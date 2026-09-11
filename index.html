@@ -52,13 +52,20 @@
   .btn:hover { border-color: rgba(255,255,255,.3); }
   .meta { margin-top: 26px; display: flex; gap: 18px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--faint); letter-spacing: .06em; }
 
-  /* Phone frame */
-  .phone { position: relative; width: 100%; max-width: 300px; aspect-ratio: 1260 / 2736; margin: 0 auto;
-           border-radius: 13.5% / 6.2%; background: #000; padding: 2.6%;
-           box-shadow: 0 0 0 1.5px rgba(255,255,255,.14), 0 30px 60px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.05); }
-  .phone .screen { position: absolute; inset: 2.6%; border-radius: 12% / 5.5%; overflow: hidden; background: #111; }
+  /* iPhone Air. Body 156.2 x 74.7 mm around a 2736 x 1260 screen; island 125.3 x 36.7 pt at y 20 on a 420 pt screen. */
+  .phone { position: relative; width: 100%; max-width: 300px; aspect-ratio: 747 / 1562; margin: 0 auto;
+           border-radius: 18.2% / 8.7%;
+           background: linear-gradient(160deg, #3a3a3f, #17171a 45%, #0d0d10);
+           box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), inset 0 0 0 3px #0a0a0c, 0 30px 60px rgba(0,0,0,.6); }
+  .phone .screen { position: absolute; left: 4.1%; right: 4.1%; top: 4.6%; bottom: 4.6%;
+                   border-radius: 13% / 6%; overflow: hidden; background: #000; }
   .phone video, .phone img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .phone .island { position: absolute; top: 3.2%; left: 50%; width: 31%; height: 4.2%; transform: translateX(-50%); background: #000; border-radius: 999px; z-index: 2; }
+  .phone .island { position: absolute; top: 6.6%; left: 50%; width: 27.3%; height: 3.65%; transform: translateX(-50%);
+                   background: #000; border-radius: 999px; z-index: 2; }
+  /* Side buttons */
+  .phone::before, .phone::after { content: ""; position: absolute; width: 1.2%; border-radius: 2px; background: #1e1e22; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
+  .phone::before { left: -1.2%; top: 20%; height: 9%; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 13% 0 0 #1e1e22; }
+  .phone::after { right: -1.2%; top: 24%; height: 13%; }
   .hero .phone { max-width: 340px; }
   .hero .phone.tilt { transform: rotate(-4deg); }
 
