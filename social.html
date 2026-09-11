@@ -8,7 +8,7 @@
   One viewport, six phones, all playing. Local only; not deployed.
   Record the whole window for a grid post, or record one phone for a thread.
   Keys:  1–6 solo a phone (others hide)  ·  0 show all  ·  R restart every clip  ·  H hide the caption strip
-  Query: ?cols=2 for a 2×3 board, ?bg=fff for a light background, ?w=1920&h=1080 to fix the board size.
+  Layout: two hero phones on top, four beneath. Query: ?bg=fff for a light background, ?w=1920&h=1080 to fix the board size.
 -->
 <style>
   :root { --bg: #09090b; --fg: #f5f5f7; --dim: rgba(245,245,247,.6); --accent: #e8542a; }
@@ -16,8 +16,13 @@
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg);
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; overflow: hidden; }
   .board { position: relative; width: 100vw; height: 100vh; display: grid; place-items: center; }
-  /* The grid is sized in JS from whichever of width or height binds, so all cells fit one viewport. */
-  .grid { display: grid; grid-template-columns: repeat(var(--cols, 3), 1fr); gap: var(--gap, 2vh) var(--gap, 2vh); width: var(--grid-w, 90vw); }
+  /* Two rows sized in JS from whichever of width or height binds: a pair of heroes on top, four beneath. */
+  .grid { display: flex; flex-direction: column; align-items: center; gap: var(--gap, 2vh); }
+  .row { display: grid; gap: var(--gap, 2vh); }
+  .row.hero { grid-template-columns: repeat(2, 1fr); width: var(--hero-w, 60vw); }
+  .row.rest { grid-template-columns: repeat(4, 1fr); width: var(--rest-w, 90vw); }
+  body.solo .row { display: none; }
+  body.solo .row.on { display: grid; grid-template-columns: 1fr; width: var(--solo-w, 40vw); }
   body.solo .cell:not(.on) { display: none; }
   body.nocap .cap { display: none; }
 
@@ -41,12 +46,16 @@
 <body>
 <div class="board">
   <div class="grid" id="grid">
+    <div class="row hero">
     <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/stories.webm" type="video/webm"><source src="media/stories.mp4" type="video/mp4"></video></div><div class="cap"><b>Into the island</b><span>FoldCutoutGhost · liquid</span></div></div>
     <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/wallet.webm" type="video/webm"><source src="media/wallet.mp4" type="video/mp4"></video></div><div class="cap"><b>Page turn</b><span>FoldTransition · .pageTurn</span></div></div>
+    </div>
+    <div class="row rest">
     <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/weather.webm" type="video/webm"><source src="media/weather.mp4" type="video/mp4"></video></div><div class="cap"><b>Midnight glass</b><span>FoldAppearance.midnight</span></div></div>
     <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/amalfi.webm" type="video/webm"><source src="media/amalfi.mp4" type="video/mp4"></video></div><div class="cap"><b>Swipe to fold</b><span>.foldSwipe(progress:)</span></div></div>
     <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/steps.webm" type="video/webm"><source src="media/steps.mp4" type="video/mp4"></video></div><div class="cap"><b>Frosted</b><span>FoldStyle.frosted</span></div></div>
     <div class="cell"><div class="phone"><video muted loop playsinline preload="auto"><source src="media/boarding.webm" type="video/webm"><source src="media/boarding.mp4" type="video/mp4"></video></div><div class="cap"><b>Native UIKit</b><span>FoldContainerView</span></div></div>
+    </div>
   </div>
   <div class="brand">
     <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#E8542A"/><path d="M8 21l8-4 8 4-8 4z" fill="#fff" opacity=".55"/><path d="M8 16l8-4 8 4-8 4z" fill="#fff" opacity=".8"/><path d="M8 11l8-4 8 4-8 4z" fill="#fff"/></svg>
@@ -55,29 +64,34 @@
 </div>
 <script>
   const q = new URLSearchParams(location.search);
-  const cols = Number(q.get('cols') || 3);
   const cells = [...document.querySelectorAll('.cell')];
-  document.documentElement.style.setProperty('--cols', cols);
-  document.documentElement.style.setProperty('--rows', Math.ceil(cells.length / cols));
   if (q.get('bg')) document.documentElement.style.setProperty('--bg', '#' + q.get('bg'));
   if (q.get('bg') === 'fff') { document.documentElement.style.setProperty('--fg', '#111'); document.documentElement.style.setProperty('--dim', 'rgba(0,0,0,.55)'); }
   if (q.get('w') && q.get('h')) { document.body.style.width = q.get('w') + 'px'; document.body.style.height = q.get('h') + 'px'; }
 
-  // Fit: each cell is a phone (aspect 747/1562) plus a caption; solve for the largest phone width
-  // that fits both the viewport width and height, then set the grid width from it.
-  const PHONE = 747 / 1562;
+  // Fit: two rows share the viewport height. The hero pair gets `HERO` of the phone height budget,
+  // the four beneath the rest; each row is then also capped by the viewport width.
+  const PHONE = 682 / 1426;
+  const HERO = 0.56;
   function fit() {
     const solo = document.body.classList.contains('solo');
-    const c = solo ? 1 : cols, r = solo ? 1 : Math.ceil(cells.length / cols);
     const nocap = document.body.classList.contains('nocap');
-    const cap = nocap ? 0 : Math.max(26, innerHeight * 0.048);
+    const cap = nocap ? 0 : Math.max(24, innerHeight * 0.046);
     const gap = Math.max(12, innerHeight * 0.02);
-    const pad = innerHeight * 0.05, brand = nocap ? 0 : innerHeight * 0.05;
-    const byH = (innerHeight - 2 * pad - brand - (r - 1) * gap) / r - cap;      // phone height limit
-    const byW = (innerWidth - 2 * pad - (c - 1) * gap) / c;                    // phone width limit
-    const w = Math.max(80, Math.min(byW, byH * PHONE));
+    const pad = innerHeight * 0.04, brand = nocap ? 0 : innerHeight * 0.05;
     document.documentElement.style.setProperty('--gap', gap + 'px');
-    document.documentElement.style.setProperty('--grid-w', (w * c + (c - 1) * gap) + 'px');
+    if (solo) {
+      const h = innerHeight - 2 * pad - brand - cap;
+      const w = Math.min(innerWidth - 2 * pad, h * PHONE);
+      document.documentElement.style.setProperty('--solo-w', w + 'px');
+      return;
+    }
+    const budget = innerHeight - 2 * pad - brand - gap - 2 * cap;   // phone heights, both rows
+    const heroH = budget * HERO, restH = budget * (1 - HERO);
+    const heroW = Math.min(heroH * PHONE, (innerWidth - 2 * pad - gap) / 2);
+    const restW = Math.min(restH * PHONE, (innerWidth - 2 * pad - 3 * gap) / 4);
+    document.documentElement.style.setProperty('--hero-w', (heroW * 2 + gap) + 'px');
+    document.documentElement.style.setProperty('--rest-w', (restW * 4 + 3 * gap) + 'px');
   }
   addEventListener('resize', fit);
   new MutationObserver(fit).observe(document.body, { attributes: true, attributeFilter: ['class'] });
@@ -92,6 +106,7 @@
   addEventListener('keydown', e => {
     if (e.key >= '1' && e.key <= '6') {
       cells.forEach((c, i) => c.classList.toggle('on', i === Number(e.key) - 1));
+      document.querySelectorAll('.row').forEach(r => r.classList.toggle('on', !!r.querySelector('.cell.on')));
       document.body.classList.add('solo'); restart();
     } else if (e.key === '0') {
       document.body.classList.remove('solo'); restart();
