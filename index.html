@@ -52,20 +52,21 @@
   .btn:hover { border-color: rgba(255,255,255,.3); }
   .meta { margin-top: 26px; display: flex; gap: 18px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--faint); letter-spacing: .06em; }
 
-  /* iPhone Air. Body 156.2 x 74.7 mm around a 2736 x 1260 screen; island 125.3 x 36.7 pt at y 20 on a 420 pt screen. */
-  .phone { position: relative; width: 100%; max-width: 300px; aspect-ratio: 747 / 1562; margin: 0 auto;
-           border-radius: 18.2% / 8.7%;
+  /* iPhone Air. Body 156.2 x 74.7 mm around a 420 x 912 pt screen whose corners are 55 pt.
+     The recording is a plain rectangle, so the screen box supplies the corners and the island. */
+  .phone { position: relative; width: 100%; aspect-ratio: 747 / 1562;
+           border-radius: 20% / 9.6%;
            background: linear-gradient(160deg, #3a3a3f, #17171a 45%, #0d0d10);
-           box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), inset 0 0 0 3px #0a0a0c, 0 30px 60px rgba(0,0,0,.6); }
+           box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), inset 0 0 0 3px #0a0a0c, 0 2vh 5vh rgba(0,0,0,.65); }
   .phone .screen { position: absolute; left: 4.1%; right: 4.1%; top: 4.6%; bottom: 4.6%;
-                   border-radius: 13% / 6%; overflow: hidden; background: #000; }
+                   border-radius: 13.1% / 6.03%; overflow: hidden; background: #000; }
   .phone video, .phone img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .phone .island { position: absolute; top: 6.6%; left: 50%; width: 27.3%; height: 3.65%; transform: translateX(-50%);
+  .phone .island { position: absolute; top: 2.19%; left: 50%; width: 29.8%; height: 4.02%; transform: translateX(-50%);
                    background: #000; border-radius: 999px; z-index: 2; }
-  /* Side buttons */
   .phone::before, .phone::after { content: ""; position: absolute; width: 1.2%; border-radius: 2px; background: #1e1e22; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
   .phone::before { left: -1.2%; top: 20%; height: 9%; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 13% 0 0 #1e1e22; }
   .phone::after { right: -1.2%; top: 24%; height: 13%; }
+
   .hero .phone { max-width: 340px; }
   .hero .phone.tilt { transform: rotate(-4deg); }
 
@@ -147,8 +148,8 @@
       <div class="meta"><span>MIT</span><span>SwiftUI · UIKit</span><span>ONE METAL SHADER</span><span>SWIFT 6</span></div>
     </div>
     <div class="phone tilt">
-      <div class="island"></div>
       <div class="screen">
+        <div class="island"></div>
         <video autoplay muted loop playsinline poster="media/wallet.jpg" aria-label="A wallet screen folding like frosted glass into a card detail">
           <source src="media/wallet.webm" type="video/webm">
           <source src="media/wallet.mp4" type="video/mp4">
@@ -162,7 +163,7 @@
     <p class="sub">Every clip is a real screen from the demo app, captured on device. Nothing is composited after the fact; the frost, the crease, and the island are all the shader.</p>
     <div class="gallery">
       <div class="demo">
-        <div class="phone"><div class="island"></div><div class="screen">
+        <div class="phone"><div class="screen"><div class="island"></div>
           <video autoplay muted loop playsinline poster="media/stories.jpg"><source src="media/stories.webm" type="video/webm"><source src="media/stories.mp4" type="video/mp4"></video>
         </div></div>
         <h3>The island eats your cards</h3>
@@ -170,7 +171,7 @@
         <p><code>FoldCutoutGhost · liquid: true</code></p>
       </div>
       <div class="demo">
-        <div class="phone"><div class="island"></div><div class="screen">
+        <div class="phone"><div class="screen"><div class="island"></div>
           <video autoplay muted loop playsinline poster="media/wallet.jpg"><source src="media/wallet.webm" type="video/webm"><source src="media/wallet.mp4" type="video/mp4"></video>
         </div></div>
         <h3>Page turn</h3>
@@ -178,7 +179,7 @@
         <p><code>FoldTransition · .pageTurn</code></p>
       </div>
       <div class="demo">
-        <div class="phone"><div class="island"></div><div class="screen">
+        <div class="phone"><div class="screen"><div class="island"></div>
           <video autoplay muted loop playsinline poster="media/weather.jpg"><source src="media/weather.webm" type="video/webm"><source src="media/weather.mp4" type="video/mp4"></video>
         </div></div>
         <h3>Midnight glass</h3>
@@ -186,7 +187,7 @@
         <p><code>FoldStyle(appearance: .midnight)</code></p>
       </div>
       <div class="demo">
-        <div class="phone"><div class="island"></div><div class="screen">
+        <div class="phone"><div class="screen"><div class="island"></div>
           <video autoplay muted loop playsinline poster="media/amalfi.jpg"><source src="media/amalfi.webm" type="video/webm"><source src="media/amalfi.mp4" type="video/mp4"></video>
         </div></div>
         <h3>Swipe to fold</h3>
@@ -194,7 +195,7 @@
         <p><code>.foldSwipe(progress:)</code></p>
       </div>
       <div class="demo">
-        <div class="phone"><div class="island"></div><div class="screen">
+        <div class="phone"><div class="screen"><div class="island"></div>
           <video autoplay muted loop playsinline poster="media/steps.jpg"><source src="media/steps.webm" type="video/webm"><source src="media/steps.mp4" type="video/mp4"></video>
         </div></div>
         <h3>Frosted</h3>
@@ -202,7 +203,7 @@
         <p><code>FoldStyle.frosted</code></p>
       </div>
       <div class="demo">
-        <div class="phone"><div class="island"></div><div class="screen">
+        <div class="phone"><div class="screen"><div class="island"></div>
           <video autoplay muted loop playsinline poster="media/boarding.jpg"><source src="media/boarding.webm" type="video/webm"><source src="media/boarding.mp4" type="video/mp4"></video>
         </div></div>
         <h3>Native UIKit</h3>
@@ -223,8 +224,8 @@
         <p>The projection and optics are adapted from Elijah Semyonov's <a href="https://github.com/elijah-semyonov/DuoLikeAnimation">DuoLikeAnimation</a>, MIT. Foldy adds texture capture, two-view compositing, a blur pyramid, page turns, materials, the island, and gesture and motion inputs.</p>
       </div>
       <div class="phone">
-        <div class="island"></div>
         <div class="screen">
+          <div class="island"></div>
           <video autoplay muted loop playsinline poster="media/boarding.jpg"><source src="media/boarding.webm" type="video/webm"><source src="media/boarding.mp4" type="video/mp4"></video>
         </div>
       </div>
